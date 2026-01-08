@@ -1,0 +1,49 @@
+{
+    "manifest_version": 2,
+    "name": "SideAI - AI Assistant",
+    "version": "2.0.0",
+    "description": "A high-contrast neubrutalist AI assistant that sits on the right side of your screen.",
+    "permissions": [
+        "storage",
+        "activeTab",
+        "https://api.groq.com/*",
+        "<all_urls>"
+    ],
+    "browser_action": {
+        "default_title": "Toggle SideAI",
+        "default_icon": {
+            "32": "icons/icon-32.png",
+            "48": "icons/icon-48.png"
+        }
+    },
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "persistent": true
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "content.js"
+            ],
+            "css": [
+                "content.css"
+            ],
+            "run_at": "document_end"
+        }
+    ],
+    "web_accessible_resources": [
+        "icons/*",
+        "content.css"
+    ],
+    "applications": {
+        "gecko": {
+            "id": "sideai@amals.xyz",
+            "strict_min_version": "57.0"
+        }
+    }
+}
