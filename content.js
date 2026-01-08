@@ -47,45 +47,96 @@ class SideAI {
         root.id = 'sideai-root';
         shadow.appendChild(root);
 
-        root.innerHTML = `
-            <header>
-                <button id="sideai-settings-btn" class="icon-btn" title="Settings">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                </button>
-                <div class="model-pill">sideai @ ${this.selectedModel}</div>
-                <button id="sideai-history-btn" class="icon-btn" title="Chat History">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </button>
-                <button id="sideai-clear-btn" class="icon-btn" title="Clear Chat">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
-                </button>
-                <button id="sideai-close-btn" class="icon-btn" title="Close">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"></path></svg>
-                </button>
-            </header>
+        // Build UI structure safely using DOM methods
+        const header = document.createElement('header');
 
-            <div id="chat-area">
-                <div id="sideai-messages"></div>
-            </div>
+        // Settings button
+        const settingsBtn = document.createElement('button');
+        settingsBtn.id = 'sideai-settings-btn';
+        settingsBtn.className = 'icon-btn';
+        settingsBtn.title = 'Settings';
+        settingsBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>';
+        header.appendChild(settingsBtn);
 
-            <div class="actions-container">
-                <button class="action-pill" data-action="search">web search</button>
-                <button class="action-pill" data-action="summarize">chat about page</button>
-            </div>
+        // Model pill
+        const modelPill = document.createElement('div');
+        modelPill.className = 'model-pill';
+        modelPill.textContent = `sideai @ ${this.selectedModel}`;
+        header.appendChild(modelPill);
 
-            <footer>
-                <div class="input-container">
-                    <div class="input-pill">
-                        <input type="text" id="sideai-input" placeholder="Ask SideAI...">
-                    </div>
-                    <button class="circle-btn" id="sideai-send">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"></path></svg>
-                    </button>
-                </div>
-            </footer>
+        // History button
+        const historyBtn = document.createElement('button');
+        historyBtn.id = 'sideai-history-btn';
+        historyBtn.className = 'icon-btn';
+        historyBtn.title = 'Chat History';
+        historyBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+        header.appendChild(historyBtn);
 
-            <div id="sideai-modal-container"></div>
-        `;
+        // Clear button
+        const clearBtn = document.createElement('button');
+        clearBtn.id = 'sideai-clear-btn';
+        clearBtn.className = 'icon-btn';
+        clearBtn.title = 'Clear Chat';
+        clearBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>';
+        header.appendChild(clearBtn);
+
+        // Close button
+        const closeBtn = document.createElement('button');
+        closeBtn.id = 'sideai-close-btn';
+        closeBtn.className = 'icon-btn';
+        closeBtn.title = 'Close';
+        closeBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"></path></svg>';
+        header.appendChild(closeBtn);
+
+        root.appendChild(header);
+
+        // Chat area
+        const chatArea = document.createElement('div');
+        chatArea.id = 'chat-area';
+        const messagesDiv = document.createElement('div');
+        messagesDiv.id = 'sideai-messages';
+        chatArea.appendChild(messagesDiv);
+        root.appendChild(chatArea);
+
+        // Actions container
+        const actionsContainer = document.createElement('div');
+        actionsContainer.className = 'actions-container';
+        const searchBtn = document.createElement('button');
+        searchBtn.className = 'action-pill';
+        searchBtn.dataset.action = 'search';
+        searchBtn.textContent = 'web search';
+        actionsContainer.appendChild(searchBtn);
+        const summarizeBtn = document.createElement('button');
+        summarizeBtn.className = 'action-pill';
+        summarizeBtn.dataset.action = 'summarize';
+        summarizeBtn.textContent = 'chat about page';
+        actionsContainer.appendChild(summarizeBtn);
+        root.appendChild(actionsContainer);
+
+        // Footer
+        const footer = document.createElement('footer');
+        const inputContainer = document.createElement('div');
+        inputContainer.className = 'input-container';
+        const inputPill = document.createElement('div');
+        inputPill.className = 'input-pill';
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = 'sideai-input';
+        input.placeholder = 'Ask SideAI...';
+        inputPill.appendChild(input);
+        inputContainer.appendChild(inputPill);
+        const sendBtn = document.createElement('button');
+        sendBtn.className = 'circle-btn';
+        sendBtn.id = 'sideai-send';
+        sendBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"></path></svg>';
+        inputContainer.appendChild(sendBtn);
+        footer.appendChild(inputContainer);
+        root.appendChild(footer);
+
+        // Modal container
+        const modalContainer = document.createElement('div');
+        modalContainer.id = 'sideai-modal-container';
+        root.appendChild(modalContainer);
 
         this.root = root;
     }
@@ -113,7 +164,7 @@ class SideAI {
         clearBtn.addEventListener('click', () => {
             if (confirm('Clear all chat history?')) {
                 this.history = [];
-                this.root.querySelector('#sideai-messages').innerHTML = '';
+                this.root.querySelector('#sideai-messages').textContent = '';
             }
         });
 
@@ -169,7 +220,11 @@ class SideAI {
             container.appendChild(watermark);
         }
 
-        msgDiv.innerHTML = `<div class="message-bubble">${text}</div>`;
+        // Use textContent instead of innerHTML for security
+        const bubble = document.createElement('div');
+        bubble.className = 'message-bubble';
+        bubble.textContent = text;
+        msgDiv.appendChild(bubble);
         container.appendChild(msgDiv);
         container.parentElement.scrollTop = container.parentElement.scrollHeight;
         return msgDiv;
@@ -213,78 +268,181 @@ class SideAI {
     showHistory() {
         const modalContainer = this.root.querySelector('#sideai-modal-container');
 
-        let historyHTML = '<div style="max-height: 400px; overflow-y: auto;">';
+        // Clear previous content
+        modalContainer.textContent = '';
+
+        // Build modal structure safely
+        const modal = document.createElement('div');
+        modal.className = 'sideai-modal';
+
+        const modalContent = document.createElement('div');
+        modalContent.className = 'sideai-modal-content';
+
+        const title = document.createElement('h3');
+        title.style.marginTop = '0';
+        title.textContent = `Chat History (${this.history.length} messages)`;
+        modalContent.appendChild(title);
+
+        const historyContainer = document.createElement('div');
+        historyContainer.style.maxHeight = '400px';
+        historyContainer.style.overflowY = 'auto';
+
         if (this.history.length === 0) {
-            historyHTML += '<p style="text-align: center; color: #666;">No chat history yet</p>';
+            const emptyMsg = document.createElement('p');
+            emptyMsg.style.textAlign = 'center';
+            emptyMsg.style.color = '#666';
+            emptyMsg.textContent = 'No chat history yet';
+            historyContainer.appendChild(emptyMsg);
         } else {
             this.history.forEach((msg) => {
                 const role = msg.role === 'user' ? 'You' : 'AI';
                 const content = msg.content.length > 200 ? msg.content.substring(0, 200) + '...' : msg.content;
-                historyHTML += `
-                    <div style="margin-bottom: 12px; padding: 8px; border: 1px solid #ddd; border-radius: 8px;">
-                        <strong>${role}:</strong><br>
-                        <span style="font-size: 0.9em;">${content}</span>
-                    </div>
-                `;
+
+                const msgDiv = document.createElement('div');
+                msgDiv.style.marginBottom = '12px';
+                msgDiv.style.padding = '8px';
+                msgDiv.style.border = '1px solid #ddd';
+                msgDiv.style.borderRadius = '8px';
+
+                const roleLabel = document.createElement('strong');
+                roleLabel.textContent = role + ':';
+                msgDiv.appendChild(roleLabel);
+
+                msgDiv.appendChild(document.createElement('br'));
+
+                const contentSpan = document.createElement('span');
+                contentSpan.style.fontSize = '0.9em';
+                contentSpan.textContent = content;
+                msgDiv.appendChild(contentSpan);
+
+                historyContainer.appendChild(msgDiv);
             });
         }
-        historyHTML += '</div>';
 
-        modalContainer.innerHTML = `
-            <div class="sideai-modal">
-                <div class="sideai-modal-content">
-                    <h3 style="margin-top:0">Chat History (${this.history.length} messages)</h3>
-                    ${historyHTML}
-                    <div style="display:flex; gap:10px; margin-top:20px">
-                        <button id="sideai-close-history" class="action-pill" style="flex:1">Close</button>
-                    </div>
-                </div>
-            </div>
-        `;
+        modalContent.appendChild(historyContainer);
 
-        modalContainer.querySelector('#sideai-close-history').onclick = () => {
-            modalContainer.innerHTML = '';
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.display = 'flex';
+        buttonContainer.style.gap = '10px';
+        buttonContainer.style.marginTop = '20px';
+
+        const closeBtn = document.createElement('button');
+        closeBtn.id = 'sideai-close-history';
+        closeBtn.className = 'action-pill';
+        closeBtn.style.flex = '1';
+        closeBtn.textContent = 'Close';
+        buttonContainer.appendChild(closeBtn);
+
+        modalContent.appendChild(buttonContainer);
+        modal.appendChild(modalContent);
+        modalContainer.appendChild(modal);
+
+        closeBtn.onclick = () => {
+            modalContainer.textContent = '';
         };
     }
 
     showSettings() {
         const modalContainer = this.root.querySelector('#sideai-modal-container');
-        modalContainer.innerHTML = `
-            <div class="sideai-modal">
-                <div class="sideai-modal-content">
-                    <h3 style="margin-top:0">Settings</h3>
-                    <div class="sideai-form-group">
-                        <label>Groq API Key</label>
-                        <input type="password" id="sideai-api-key-input" value="${this.apiKey}">
-                    </div>
-                    <div class="sideai-form-group">
-                        <label>Model</label>
-                        <select id="sideai-model-select">
-                            <option value="llama-3.3-70b-versatile" ${this.selectedModel === 'llama-3.3-70b-versatile' ? 'selected' : ''}>Llama 3.3 70B</option>
-                            <option value="llama-3.1-8b-instant" ${this.selectedModel === 'llama-3.1-8b-instant' ? 'selected' : ''}>Llama 3.1 8B</option>
-                        </select>
-                    </div>
-                    <div style="display:flex; gap:10px; margin-top:20px">
-                        <button id="sideai-save-settings" class="action-pill" style="flex:1">Save</button>
-                        <button id="sideai-cancel-settings" class="action-pill" style="flex:1">Cancel</button>
-                    </div>
-                </div>
-            </div>
-        `;
 
-        modalContainer.querySelector('#sideai-save-settings').onclick = () => {
-            const key = modalContainer.querySelector('#sideai-api-key-input').value;
-            const model = modalContainer.querySelector('#sideai-model-select').value;
+        // Clear previous content
+        modalContainer.textContent = '';
+
+        // Build modal structure safely
+        const modal = document.createElement('div');
+        modal.className = 'sideai-modal';
+
+        const modalContent = document.createElement('div');
+        modalContent.className = 'sideai-modal-content';
+
+        const title = document.createElement('h3');
+        title.style.marginTop = '0';
+        title.textContent = 'Settings';
+        modalContent.appendChild(title);
+
+        // API Key form group
+        const apiKeyGroup = document.createElement('div');
+        apiKeyGroup.className = 'sideai-form-group';
+
+        const apiKeyLabel = document.createElement('label');
+        apiKeyLabel.textContent = 'Groq API Key';
+        apiKeyGroup.appendChild(apiKeyLabel);
+
+        const apiKeyInput = document.createElement('input');
+        apiKeyInput.type = 'password';
+        apiKeyInput.id = 'sideai-api-key-input';
+        apiKeyInput.value = this.apiKey;
+        apiKeyGroup.appendChild(apiKeyInput);
+
+        modalContent.appendChild(apiKeyGroup);
+
+        // Model form group
+        const modelGroup = document.createElement('div');
+        modelGroup.className = 'sideai-form-group';
+
+        const modelLabel = document.createElement('label');
+        modelLabel.textContent = 'Model';
+        modelGroup.appendChild(modelLabel);
+
+        const modelSelect = document.createElement('select');
+        modelSelect.id = 'sideai-model-select';
+
+        const option1 = document.createElement('option');
+        option1.value = 'llama-3.3-70b-versatile';
+        option1.textContent = 'Llama 3.3 70B';
+        if (this.selectedModel === 'llama-3.3-70b-versatile') {
+            option1.selected = true;
+        }
+        modelSelect.appendChild(option1);
+
+        const option2 = document.createElement('option');
+        option2.value = 'llama-3.1-8b-instant';
+        option2.textContent = 'Llama 3.1 8B';
+        if (this.selectedModel === 'llama-3.1-8b-instant') {
+            option2.selected = true;
+        }
+        modelSelect.appendChild(option2);
+
+        modelGroup.appendChild(modelSelect);
+        modalContent.appendChild(modelGroup);
+
+        // Button container
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.display = 'flex';
+        buttonContainer.style.gap = '10px';
+        buttonContainer.style.marginTop = '20px';
+
+        const saveBtn = document.createElement('button');
+        saveBtn.id = 'sideai-save-settings';
+        saveBtn.className = 'action-pill';
+        saveBtn.style.flex = '1';
+        saveBtn.textContent = 'Save';
+        buttonContainer.appendChild(saveBtn);
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.id = 'sideai-cancel-settings';
+        cancelBtn.className = 'action-pill';
+        cancelBtn.style.flex = '1';
+        cancelBtn.textContent = 'Cancel';
+        buttonContainer.appendChild(cancelBtn);
+
+        modalContent.appendChild(buttonContainer);
+        modal.appendChild(modalContent);
+        modalContainer.appendChild(modal);
+
+        saveBtn.onclick = () => {
+            const key = apiKeyInput.value;
+            const model = modelSelect.value;
             this.apiKey = key;
             this.selectedModel = model;
             chrome.storage.local.set({ apiKey: key, selectedModel: model }, () => {
-                this.root.querySelector('.model-pill').innerText = `sideai @ ${model}`;
-                modalContainer.innerHTML = '';
+                this.root.querySelector('.model-pill').textContent = `sideai @ ${model}`;
+                modalContainer.textContent = '';
             });
         };
 
-        modalContainer.querySelector('#sideai-cancel-settings').onclick = () => {
-            modalContainer.innerHTML = '';
+        cancelBtn.onclick = () => {
+            modalContainer.textContent = '';
         };
     }
 }
