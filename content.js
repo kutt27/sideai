@@ -11,10 +11,12 @@ class SideAI {
     }
 
     async init() {
+        // Check if already initialized
+        if (document.getElementById('sideai-wrapper')) return;
+
         chrome.storage.local.get(['apiKey', 'selectedModel'], (data) => {
             this.apiKey = data.apiKey || "";
             this.selectedModel = data.selectedModel || "llama-3.3-70b-versatile";
-
             this.createUI();
             this.attachListeners();
         });
@@ -49,6 +51,18 @@ class SideAI {
 
         const root = document.createElement('div');
         root.id = 'sideai-root';
+
+        // Add critical styles immediately to prevent flickering while content.css loads
+        const initialStyle = document.createElement('style');
+        initialStyle.textContent = `
+            #sideai-root {
+                transform: translateX(100%);
+            }
+            #sideai-root.visible {
+                transform: translateX(0);
+            }
+        `;
+        shadow.appendChild(initialStyle);
         shadow.appendChild(root);
 
         // Build UI structure safely using DOM methods
@@ -146,9 +160,11 @@ class SideAI {
     }
 
     attachListeners() {
-        chrome.runtime.onMessage.addListener((request) => {
+        chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             if (request.action === 'toggle') {
                 this.toggle();
+                sendResponse({ success: true });
+                return true; // Keep message channel open
             }
         });
 
@@ -160,7 +176,7 @@ class SideAI {
         const closeBtn = this.root.querySelector('#sideai-close-btn');
         const actionPills = this.root.querySelectorAll('.action-pill');
 
-        // Prevent YouTube keyboard shortcuts when typing in sidebar
+        // Prevent keyboard conflicts
         input.addEventListener('keydown', (e) => {
             e.stopPropagation();
             e.stopImmediatePropagation();
@@ -180,7 +196,6 @@ class SideAI {
             e.stopImmediatePropagation();
         });
 
-        // Prevent all keyboard events from bubbling when sidebar is focused
         this.root.addEventListener('keydown', (e) => {
             e.stopPropagation();
         });
@@ -190,7 +205,6 @@ class SideAI {
         });
 
         sendBtn.addEventListener('click', () => this.sendMessage());
-
         clearBtn.addEventListener('click', () => {
             if (confirm('Clear all chat history?')) {
                 this.history = [];
@@ -200,7 +214,15 @@ class SideAI {
 
         settingsBtn.addEventListener('click', () => this.showSettings());
         historyBtn.addEventListener('click', () => this.showHistory());
-        closeBtn.addEventListener('click', () => this.toggle());
+        closeBtn.addEventListener('click', () => {
+            // Notify background script that sidebar is closing
+            chrome.runtime.sendMessage({ action: 'sidebar_closed' }, () => {
+                if (chrome.runtime.lastError) {
+                    console.log("Error notifying background:", chrome.runtime.lastError);
+                }
+            });
+            this.toggle();
+        });
 
         actionPills.forEach(pill => {
             pill.addEventListener('click', () => {
@@ -241,7 +263,9 @@ class SideAI {
             }
 
             // Return focus to page when closing
-            document.activeElement.blur();
+            if (document.activeElement) {
+                document.activeElement.blur();
+            }
         }
     }
 
@@ -530,5 +554,7 @@ class SideAI {
     }
 }
 
-// Start
-new SideAI();
+// Only create one instance
+if (!window.sideAI) {
+    window.sideAI = new SideAI();
+}

@@ -1,35 +1,62 @@
 // Background script for SideAI (MV2)
-let sideAIWindow = null;
+let activeTabId = null;
 let isOpen = false;
 
 chrome.browserAction.onClicked.addListener((tab) => {
     console.log("Browser action clicked for tab:", tab.id);
 
-    if (isOpen && sideAIWindow) {
-        // Close existing window
-        chrome.windows.remove(sideAIWindow.id);
-        sideAIWindow = null;
-        isOpen = false;
-    } else {
-        // Create new popup window
-        chrome.windows.create({
-            url: chrome.runtime.getURL('sidebar.html'),
-            type: 'popup',
-            width: 400,
-            height: 600,
-            left: screen.width - 400,
-            top: 0
-        }, (window) => {
-            sideAIWindow = window;
-            isOpen = true;
+    if (isOpen && activeTabId === tab.id) {
+        // Close sidebar on same tab
+        chrome.tabs.sendMessage(activeTabId, { action: 'toggle' }, () => {
+            if (chrome.runtime.lastError) {
+                console.log("Error closing sidebar:", chrome.runtime.lastError);
+            }
         });
+        activeTabId = null;
+        isOpen = false;
+    } else if (isOpen && activeTabId !== tab.id) {
+        // Close on old tab, open on new tab
+        chrome.tabs.sendMessage(activeTabId, { action: 'toggle' }, () => {
+            if (chrome.runtime.lastError) {
+                console.log("Error closing sidebar on old tab:", chrome.runtime.lastError);
+            }
+            // Open on new tab after closing old one
+            setTimeout(() => {
+                chrome.tabs.sendMessage(tab.id, { action: 'toggle' });
+                activeTabId = tab.id;
+                isOpen = true;
+            }, 100);
+        });
+    } else {
+        // Open sidebar on current tab (was closed)
+        chrome.tabs.sendMessage(tab.id, { action: 'toggle' });
+        activeTabId = tab.id;
+        isOpen = true;
     }
 });
 
-// Handle window closed by user
-chrome.windows.onRemoved.addListener((windowId) => {
-    if (sideAIWindow && sideAIWindow.id === windowId) {
-        sideAIWindow = null;
+// Listen for messages from content script
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === 'sidebar_closed') {
+        activeTabId = null;
+        isOpen = false;
+        sendResponse({ success: true });
+    }
+});
+
+// Listen for tab updates/closes
+chrome.tabs.onRemoved.addListener((tabId) => {
+    if (tabId === activeTabId) {
+        activeTabId = null;
+        isOpen = false;
+    }
+});
+
+// Listen for tab updates (refresh/navigation)
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (changeInfo.status === 'loading' && tabId === activeTabId) {
+        console.log("Active tab refreshed, resetting state");
+        activeTabId = null;
         isOpen = false;
     }
 });
