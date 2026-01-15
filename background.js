@@ -1,14 +1,37 @@
 // Background script for SideAI (MV2)
+let sideAIWindow = null;
+let isOpen = false;
+
 chrome.browserAction.onClicked.addListener((tab) => {
     console.log("Browser action clicked for tab:", tab.id);
-    chrome.tabs.sendMessage(tab.id, { action: "toggle" }, () => {
-        if (chrome.runtime.lastError) {
-            console.warn("Could not toggle: ", chrome.runtime.lastError.message);
-            // Fallback: try injecting if not present
-            chrome.tabs.executeScript(tab.id, { file: "content.js" });
-            chrome.tabs.insertCSS(tab.id, { file: "content.css" });
-        }
-    });
+
+    if (isOpen && sideAIWindow) {
+        // Close existing window
+        chrome.windows.remove(sideAIWindow.id);
+        sideAIWindow = null;
+        isOpen = false;
+    } else {
+        // Create new popup window
+        chrome.windows.create({
+            url: chrome.runtime.getURL('sidebar.html'),
+            type: 'popup',
+            width: 400,
+            height: 600,
+            left: screen.width - 400,
+            top: 0
+        }, (window) => {
+            sideAIWindow = window;
+            isOpen = true;
+        });
+    }
+});
+
+// Handle window closed by user
+chrome.windows.onRemoved.addListener((windowId) => {
+    if (sideAIWindow && sideAIWindow.id === windowId) {
+        sideAIWindow = null;
+        isOpen = false;
+    }
 });
 
 chrome.runtime.onInstalled.addListener(() => {

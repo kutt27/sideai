@@ -1,3 +1,4 @@
+
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 class SideAI {
@@ -27,6 +28,9 @@ class SideAI {
             body.sideai-open {
                 margin-right: 400px !important;
                 transition: margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            body.sideai-open * {
+                max-width: calc(100vw - 400px) !important;
             }
         `;
         document.head.appendChild(bodyStyle);
@@ -156,10 +160,36 @@ class SideAI {
         const closeBtn = this.root.querySelector('#sideai-close-btn');
         const actionPills = this.root.querySelectorAll('.action-pill');
 
-        sendBtn.addEventListener('click', () => this.sendMessage());
+        // Prevent YouTube keyboard shortcuts when typing in sidebar
         input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') this.sendMessage();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.sendMessage();
+            }
         });
+
+        input.addEventListener('keyup', (e) => {
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+        });
+
+        input.addEventListener('keypress', (e) => {
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+        });
+
+        // Prevent all keyboard events from bubbling when sidebar is focused
+        this.root.addEventListener('keydown', (e) => {
+            e.stopPropagation();
+        });
+
+        this.root.addEventListener('keyup', (e) => {
+            e.stopPropagation();
+        });
+
+        sendBtn.addEventListener('click', () => this.sendMessage());
 
         clearBtn.addEventListener('click', () => {
             if (confirm('Clear all chat history?')) {
@@ -184,7 +214,35 @@ class SideAI {
     toggle() {
         this.isOpen = !this.isOpen;
         this.root.classList.toggle('visible', this.isOpen);
-        document.body.classList.toggle('sideai-open', this.isOpen);
+
+        if (this.isOpen) {
+            // Store original body styles
+            this.originalBodyStyle = {
+                marginRight: document.body.style.marginRight,
+                maxWidth: document.body.style.maxWidth
+            };
+
+            // Apply sidebar-open styles
+            document.body.classList.add('sideai-open');
+            document.body.style.marginRight = '400px';
+            document.body.style.transition = 'margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+
+            // Focus the input when opening
+            setTimeout(() => {
+                const input = this.root.querySelector('#sideai-input');
+                if (input) input.focus();
+            }, 300);
+        } else {
+            // Restore original styles
+            document.body.classList.remove('sideai-open');
+            if (this.originalBodyStyle) {
+                document.body.style.marginRight = this.originalBodyStyle.marginRight;
+                document.body.style.maxWidth = this.originalBodyStyle.maxWidth;
+            }
+
+            // Return focus to page when closing
+            document.activeElement.blur();
+        }
     }
 
     async sendMessage(textInput) {
@@ -220,10 +278,35 @@ class SideAI {
             container.appendChild(watermark);
         }
 
-        // Use textContent instead of innerHTML for security
+        // Create message bubble with proper text formatting
         const bubble = document.createElement('div');
         bubble.className = 'message-bubble';
+
+        // Format text with line breaks and basic markdown-like formatting
+        const formattedText = text
+            .replace(/\n/g, '<br>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/`(.*?)`/g, '<code>$1</code>');
+
+        // Use textContent for safety, then manually add formatting
         bubble.textContent = text;
+
+        // If text contains formatting, use safe innerHTML
+        if (text.includes('**') || text.includes('*') || text.includes('`') || text.includes('\n')) {
+            // Sanitize and format safely
+            const sanitizedText = text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#x27;')
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code>$1</code>');
+            bubble.innerHTML = sanitizedText;
+        }
         msgDiv.appendChild(bubble);
         container.appendChild(msgDiv);
         container.parentElement.scrollTop = container.parentElement.scrollHeight;

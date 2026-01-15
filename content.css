@@ -27,6 +27,8 @@
     overflow: hidden;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateX(100%);
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    isolation: isolate;
 }
 
 #sideai-root.visible {
@@ -113,6 +115,25 @@ header {
     border-radius: 20px;
     background: var(--sideai-pill);
     color: var(--sideai-text);
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
+.message-bubble code {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: var(--sideai-font-mono);
+    font-size: 0.9em;
+}
+
+.message-bubble strong {
+    font-weight: 700;
+}
+
+.message-bubble em {
+    font-style: italic;
 }
 
 .actions-container {
@@ -169,6 +190,11 @@ footer {
     font-family: inherit;
     font-size: 0.95rem;
     color: var(--sideai-text);
+}
+
+#sideai-input:focus {
+    outline: none;
+    box-shadow: none;
 }
 
 .circle-btn {
