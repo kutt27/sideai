@@ -1,36 +1,23 @@
 # SideAI - Firefox AI Assistant
 
-A simple AI assistant sidebar for Firefox, powered by Groq's Llama models.
+AI assistant for Firefox, powered by Groq's Llama models.
 
 ## Features
 
-- �� Chat with AI (Llama 3.3 70B or 3.1 8B)
-- 📄 Summarize webpages
-- 🔍 Web search
-- 📜 View chat history
-- ⚙️ Simple settings
-- ❌ Easy close button
+- Chat with AI (Llama 3.3 70B or 3.1 8B)
+- Summarize webpages
+- Web search
+- View chat history
 
 ## Quick Install
 
-1. Open Firefox → `about:debugging#/runtime/this-firefox`
-2. Click "Load Temporary Add-on"
-3. Select `manifest.json` from this folder
-4. Click the SideAI icon in toolbar
+Install from: [here](https://addons.mozilla.org/en-US/firefox/addon/sideai-ai-assistant/)
 
 ## Setup
 
 1. Get free API key: [console.groq.com](https://console.groq.com/)
 2. Click SideAI icon → Settings
-3. Enter API key → Save
-
-## Usage
-
-- **Open/Close:** Click extension icon or X button
-- **Chat:** Type and press Enter
-- **History:** Click clock icon
-- **Clear:** Click trash icon
-- **Close:** Click X button
+3. Enter API key → Save | Optionally you can select different models groq cloud serve at the moment from the dropdown.
 
 ## License
 
