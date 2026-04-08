@@ -12,7 +12,12 @@ class SideAI {
 
     async init() {
         // Check if already initialized
-        if (document.getElementById('sideai-wrapper')) return;
+        if (document.getElementById('sideai-wrapper')) {
+            console.log("SideAI: Already initialized");
+            return;
+        }
+
+        console.log("SideAI: Initializing...");
 
         chrome.storage.local.get(['apiKey', 'selectedModel'], (data) => {
             this.apiKey = data.apiKey || "";
@@ -137,10 +142,10 @@ class SideAI {
         inputContainer.className = 'input-container';
         const inputPill = document.createElement('div');
         inputPill.className = 'input-pill';
-        const input = document.createElement('input');
-        input.type = 'text';
+        const input = document.createElement('textarea');
         input.id = 'sideai-input';
         input.placeholder = 'Ask SideAI...';
+        input.rows = 1;
         inputPill.appendChild(input);
         inputContainer.appendChild(inputPill);
         const sendBtn = document.createElement('button');
@@ -160,7 +165,10 @@ class SideAI {
     }
 
     attachListeners() {
+        console.log("SideAI: Attaching listeners...");
+        
         chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+            console.log("SideAI: Received message:", request);
             if (request.action === 'toggle') {
                 this.toggle();
                 sendResponse({ success: true });
@@ -180,10 +188,15 @@ class SideAI {
         input.addEventListener('keydown', (e) => {
             e.stopPropagation();
             e.stopImmediatePropagation();
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 this.sendMessage();
             }
+        });
+
+        input.addEventListener('input', () => {
+            input.style.height = 'auto';
+            input.style.height = input.scrollHeight + 'px';
         });
 
         input.addEventListener('keyup', (e) => {
@@ -234,6 +247,7 @@ class SideAI {
     }
 
     toggle() {
+        console.log("SideAI: Toggle called, isOpen:", this.isOpen);
         this.isOpen = !this.isOpen;
         this.root.classList.toggle('visible', this.isOpen);
 

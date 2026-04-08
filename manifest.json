@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "SideAI - AI Assistant",
-    "version": "2.2.0",
+    "version": "2.3.0",
     "description": "A high-contrast neubrutalist AI assistant that sits on the right side of your screen.",
     "permissions": [
         "storage",

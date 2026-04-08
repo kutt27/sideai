@@ -176,7 +176,7 @@ footer {
     flex: 1;
     background: var(--sideai-pill);
     border: 2px solid var(--sideai-border);
-    border-radius: 999px;
+    border-radius: 8px;
     padding: 10px 20px;
     display: flex;
     align-items: center;
@@ -190,6 +190,13 @@ footer {
     font-family: inherit;
     font-size: 0.95rem;
     color: var(--sideai-text);
+    resize: none;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    line-height: 1.4;
+    max-height: 150px;
+    min-height: 24px;
 }
 
 #sideai-input:focus {
