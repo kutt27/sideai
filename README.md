@@ -1,10 +1,10 @@
 # SideAI - Firefox AI Assistant
 
-AI assistant for Firefox, powered by Groq's Llama models.
+AI assistant for Firefox, powered by Groq's hosted open models.
 
 ## Features
 
-- Chat with AI (Llama 3.3 70B or 3.1 8B)
+- Chat with AI (OpenAI GPT-OSS 120B/20B, Llama 4, Qwen3, and more)
 - Summarize webpages
 - Web search
 - View chat history
@@ -17,7 +17,7 @@ Install from: [here](https://addons.mozilla.org/en-US/firefox/addon/sideai-ai-as
 
 1. Get free API key: [console.groq.com](https://console.groq.com/)
 2. Click SideAI icon → Settings
-3. Enter API key → Save | Optionally you can select different models groq cloud serve at the moment from the dropdown.
+3. Enter API key → Save | Select from the free models Groq serves (OpenAI GPT-OSS, Llama 4, Qwen3, Kimi K2, etc.) from the dropdown.
 
 ## License
 
