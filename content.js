@@ -329,25 +329,27 @@ class SideAI {
         const bubble = document.createElement('div');
         bubble.className = 'message-bubble';
 
-        // Format text with line breaks and basic markdown-like formatting
-        const formattedText = text
-            .replace(/\n/g, '<br>')
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/`(.*?)`/g, '<code>$1</code>');
-
         // Use textContent for safety, then manually add formatting
         bubble.textContent = text;
 
         // If text contains formatting, use safe innerHTML
         if (text.includes('**') || text.includes('*') || text.includes('`') || text.includes('\n')) {
             // Sanitize and format safely
-            const sanitizedText = text
+            let sanitizedText = text
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#x27;')
+                .replace(/'/g, '&#x27;');
+
+            // Handle triple backtick code blocks before inline code
+            sanitizedText = sanitizedText.replace(
+                /```(\w*)\n?([\s\S]*?)```/g,
+                (match, lang, code) => `<pre class="sideai-code-block"><code>${code.trim()}</code></pre>`
+            );
+
+            // Handle remaining formatting
+            sanitizedText = sanitizedText
                 .replace(/\n/g, '<br>')
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
@@ -366,6 +368,11 @@ class SideAI {
             return null;
         }
 
+        const systemMessage = {
+            role: 'system',
+            content: 'Keep responses concise and readable, around 100-250 words. Do not use triple backtick code blocks (```) unless the user specifically asks for code. When presenting code, use inline backticks for short snippets only.'
+        };
+
         try {
             const response = await fetch(GROQ_API_URL, {
                 method: 'POST',
@@ -375,8 +382,9 @@ class SideAI {
                 },
                 body: JSON.stringify({
                     model: this.selectedModel,
-                    messages: messages,
-                    temperature: 0.7
+                    messages: [systemMessage, ...messages],
+                    temperature: 0.7,
+                    max_tokens: 500
                 })
             });
 

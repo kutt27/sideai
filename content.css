@@ -128,6 +128,22 @@ header {
     font-size: 0.9em;
 }
 
+.message-bubble .sideai-code-block {
+    background: rgba(0, 0, 0, 0.08);
+    border: 2px solid var(--sideai-border);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 8px 0;
+    overflow-x: auto;
+}
+
+.message-bubble .sideai-code-block code {
+    background: none;
+    padding: 0;
+    font-size: 0.85em;
+    white-space: pre;
+}
+
 .message-bubble strong {
     font-weight: 700;
 }
